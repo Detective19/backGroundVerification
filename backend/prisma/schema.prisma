@@ -36,3 +36,20 @@ model Candidate {
 
   @@map("candidates")
 }
+
+model VerificationLog {
+  id              String   @id @default(cuid())
+  candidateId     String
+  aadhaarStatus   String?
+  aadhaarResponse Json?
+  panStatus       String?
+  panResponse     Json?
+  overallStatus   String
+  nameMatch       Boolean?
+  dobMatch        Boolean?
+  panStatusActive Boolean?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("verification_logs")
+}

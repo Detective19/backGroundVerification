@@ -76,3 +76,44 @@ export interface CandidateFilters {
   status?: string;
   search?: string;
 }
+
+export interface AadhaarVerifyRequest {
+  aadhaarNumber: string;
+  fullName: string;
+  dob: string;
+}
+
+export interface AadhaarVerifyResponse {
+  status: string;
+  nameMatch: boolean;
+  dobMatch: boolean;
+}
+
+export interface PANVerifyRequest {
+  panNumber: string;
+}
+
+export interface PANVerifyResponse {
+  status: string;
+  panStatus: string;
+}
+
+export interface VerifyRequest {
+  candidateId: string;
+}
+
+export interface VerificationResponse {
+  candidateId: string;
+  overallStatus: string;
+  aadhaarStatus?: string;
+  panStatus?: string;
+  details: {
+    nameMatch?: boolean;
+    dobMatch?: boolean;
+    panStatusActive?: boolean;
+  };
+  logs: {
+    aadhaarResponse?: AadhaarVerifyResponse;
+    panResponse?: PANVerifyResponse;
+  };
+}
