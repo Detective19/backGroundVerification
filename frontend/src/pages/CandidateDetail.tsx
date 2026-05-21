@@ -63,7 +63,20 @@ export const CandidateDetail: React.FC = () => {
           </h1>
           <p className="text-sm text-slate-500 mt-1">{candidate.position} • Applied {candidate.appliedDate}</p>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
+          <Button 
+            variant="outline"
+            onClick={() => window.open(`http://localhost:3000/api/candidates/${id}/report?action=preview`, '_blank')}
+            className="hidden sm:flex"
+          >
+            Preview Report
+          </Button>
+          <Button 
+            variant="secondary"
+            onClick={() => window.open(`http://localhost:3000/api/candidates/${id}/report?action=download`, '_blank')}
+          >
+            Download Report
+          </Button>
           <Button 
             onClick={handleStartVerification} 
             isLoading={isVerifying}

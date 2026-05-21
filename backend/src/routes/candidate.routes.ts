@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middleware/auth.middleware';
 import { candidateController } from '../controllers/candidate.controller';
+import { generateCandidateReport } from '../controllers/report.controller';
 
 const router = Router();
 
@@ -12,6 +13,8 @@ router.post('/', (req, res) => candidateController.createCandidate(req, res));
 router.get('/', (req, res) => candidateController.getCandidates(req, res));
 
 router.get('/:id', (req, res) => candidateController.getCandidateById(req, res));
+
+router.get('/:id/report', generateCandidateReport);
 
 router.put('/:id', (req, res) => candidateController.updateCandidate(req, res));
 
