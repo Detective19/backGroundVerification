@@ -1,285 +1,127 @@
-# Background Verification Platform - Backend
+# Background Verification Platform
 
-A clean, production-ready backend for the Background Verification Platform built with Node.js, Express, TypeScript, Prisma, and PostgreSQL.
+A comprehensive, production-ready full-stack application designed to manage, track, and generate reports for candidate background verifications.
 
-## Tech Stack
+## 🚀 Tech Stack
 
+### Frontend
+- **Framework**: React 18 with Vite
+- **Styling**: Tailwind CSS (Premium Aesthetic & Glassmorphism)
+- **State Management**: Zustand
+- **Form Handling**: React Hook Form + Zod
+- **API Client**: Axios
+
+### Backend
 - **Runtime**: Node.js
 - **Framework**: Express.js
 - **Language**: TypeScript
 - **ORM**: Prisma
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL (Neon.tech recommended)
+- **Reporting**: Puppeteer (PDF Generation)
+- **Security**: Helmet, CORS, Express-Rate-Limit
 - **Authentication**: JWT + bcrypt
-- **Validation**: Custom validators
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```
-src/
-├── config/          # Configuration files (database, environment)
-├── controllers/     # Request handlers
-├── middleware/      # Express middleware (auth, error handling)
-├── routes/          # API route definitions
-├── services/        # Business logic
-├── types/           # TypeScript types and interfaces
-├── utils/           # Utility functions (JWT, password hashing)
-├── validations/     # Input validation
-└── index.ts         # Application entry point
+backGroundV/
+├── frontend/          # React application
+│   ├── src/
+│   │   ├── api/       # Axios client & API services
+│   │   ├── components/# Reusable UI components
+│   │   ├── pages/     # React pages (Dashboard, Login, etc.)
+│   │   └── store/     # Zustand state management
+│   └── ...
+├── backend/           # Node.js Express server
+│   ├── src/
+│   │   ├── config/    # Environment configurations
+│   │   ├── controllers/# Request handlers
+│   │   ├── middleware/# Security and auth middleware
+│   │   ├── routes/    # API routes
+│   │   ├── services/  # Business logic & Puppeteer PDF generator
+│   │   └── utils/     # Helpers (JWT)
+│   ├── API_DOCS.md    # Detailed API documentation
+│   ├── DEPLOYMENT.md  # Detailed Deployment instructions
+│   └── ...
+└── README.md          # You are here
 ```
 
-## Setup Instructions
+---
+
+## ✨ Key Features
+
+1. **Secure Authentication**: JWT-based login with hashed passwords.
+2. **Dashboard Overview**: Metrics tracking total, verified, failed, and pending candidates.
+3. **Candidate Management**: View candidate details, verification timeline, and activity logs.
+4. **PDF Reporting**: Generate beautiful, downloadable background verification PDF reports via Puppeteer.
+5. **Data Masking**: Automatic masking of sensitive data (Aadhaar & PAN) on the generated PDFs.
+6. **API Security**: Implemented Helmet headers, strict CORS, and rate limiting to protect endpoints.
+
+---
+
+## 🛠️ Local Development Setup
 
 ### Prerequisites
+- Node.js 18+
+- PostgreSQL database (Local or Cloud like Neon)
 
-- Node.js 16+ 
-- PostgreSQL 12+
-- npm or yarn
-
-### 1. Install Dependencies
+### 1. Backend Setup
 
 ```bash
+cd backend
 npm install
 ```
 
-### 2. Setup Environment Variables
-
-Copy `.env.example` to `.env` and update values:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your configuration:
-
+Copy the `.env.example` file to `.env` and configure your variables:
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/background_verification"
 NODE_ENV="development"
 PORT=3000
-JWT_SECRET="your-super-secret-jwt-key-change-in-production"
-JWT_EXPIRY="7d"
+JWT_SECRET="your_secret_key"
+FRONTEND_URL="http://localhost:5173"
 ```
 
-### 3. Create Database & Run Migrations
-
+Run database migrations and start the server:
 ```bash
-# Generate Prisma client
-npm run prisma:generate
-
-# Run migrations
-npm run prisma:migrate
-```
-
-This creates the initial `users` table.
-
-### 4. Start the Server
-
-**Development mode** (with hot reload):
-
-```bash
+npx prisma generate
+npx prisma migrate dev
 npm run dev
 ```
 
-**Production mode**:
+### 2. Frontend Setup
 
+Open a new terminal window:
 ```bash
-npm run build
-npm run start
-```
-
-Server runs on `http://localhost:3000`
-
-## API Endpoints
-
-### Authentication Routes
-
-#### Register User
-
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "securePassword123"
-}
-```
-
-**Response (201)**:
-```json
-{
-  "success": true,
-  "data": {
-    "id": "user_id",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-}
-```
-
-#### Login User
-
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "securePassword123"
-}
-```
-
-**Response (200)**:
-```json
-{
-  "success": true,
-  "data": {
-    "id": "user_id",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-  }
-}
-```
-
-### Using Protected Routes
-
-Include JWT token in `Authorization` header:
-
-```http
-GET /api/protected-endpoint
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-## Database Schema
-
-### Users Table
-
-```sql
-CREATE TABLE users (
-  id VARCHAR(255) PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  passwordHash VARCHAR(255) NOT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-```
-
-## Features
-
-✅ **User Registration** - Create new user accounts with email validation
-✅ **User Login** - Authenticate with email and password
-✅ **Password Hashing** - bcrypt with 10 salt rounds
-✅ **JWT Authentication** - Secure token-based auth
-✅ **Protected Routes** - Auth middleware for route protection
-✅ **Input Validation** - Comprehensive request validation
-✅ **Error Handling** - Centralized error handling middleware
-✅ **Type Safety** - Full TypeScript support
-✅ **Clean Architecture** - Separation of concerns
-
-## Validation Rules
-
-### Register
-
-- **name**: Required, non-empty string
-- **email**: Required, valid email format
-- **password**: Required, minimum 6 characters
-
-### Login
-
-- **email**: Required, valid email format
-- **password**: Required
-
-## Error Handling
-
-The API returns consistent error responses:
-
-```json
-{
-  "success": false,
-  "error": "Error message"
-}
-```
-
-**Status Codes**:
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request (validation error)
-- `401` - Unauthorized (auth error)
-- `409` - Conflict (duplicate email)
-- `500` - Server Error
-
-## Available Scripts
-
-```bash
-# Development server with hot reload
-npm run dev
-
-# Build TypeScript to JavaScript
-npm run build
-
-# Run production build
-npm run start
-
-# Generate Prisma client
-npm run prisma:generate
-
-# Run database migrations
-npm run prisma:migrate
-
-# Deploy migrations to production
-npm run prisma:migrate:prod
-
-# Open Prisma Studio (GUI for database)
-npm run prisma:studio
-```
-
-## Security Best Practices
-
-1. **Environment Variables** - Never commit `.env` to version control
-2. **JWT Secret** - Use a strong, randomly generated secret in production
-3. **Password Hashing** - Uses bcrypt with 10 salt rounds
-4. **HTTPS** - Use HTTPS in production
-5. **Rate Limiting** - Consider adding rate limiting middleware
-6. **CORS** - Configure CORS based on your frontend domain
-
-## Next Steps
-
-1. Add more user fields (phone, address, etc.)
-2. Implement verification routes
-3. Add file upload for documents
-4. Add background check logic
-5. Implement email notifications
-6. Add rate limiting and request throttling
-7. Deploy to production (Heroku, AWS, etc.)
-
-## Troubleshooting
-
-### Database Connection Error
-
-```
-Error: connect ECONNREFUSED 127.0.0.1:5432
-```
-
-**Solution**: Ensure PostgreSQL is running and DATABASE_URL is correct
-
-### Module not found errors
-
-```bash
+cd frontend
 npm install
-npm run prisma:generate
 ```
 
-### Port already in use
-
-Change `PORT` in `.env` or:
-
+Start the Vite development server:
 ```bash
-kill -9 $(lsof -t -i:3000)
+npm run dev
 ```
+Navigate to `http://localhost:5173`. You can mock login with `admin@verifyhub.com` / `password`.
+
+---
+
+## 📚 Documentation
+
+Detailed documentation has been separated into their respective domains:
+
+- **[Backend API Docs](./backend/API_DOCS.md)**: Detailed routes, request bodies, and authentication flows.
+- **[Postman Collection](./backend/Background_Verification.postman_collection.json)**: Ready-to-import collection for testing API routes.
+- **[Deployment Guide](./backend/DEPLOYMENT.md)**: Step-by-step instructions for deploying to **Vercel** (Frontend), **Render** (Backend), and **Neon** (Database).
+
+---
+
+## 🛡️ Security Best Practices Implemented
+
+- **Helmet**: Secures Express apps by setting various HTTP headers.
+- **Rate Limiting**: Prevents brute force attacks by limiting requests to 100 per 15 minutes.
+- **CORS Configuration**: Restricts API access strictly to the authenticated frontend domain.
+- **Puppeteer Sandboxing**: Configured with `--no-sandbox` and `--disable-setuid-sandbox` for safe cloud environments.
 
 ## License
-
 ISC
