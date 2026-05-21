@@ -2,6 +2,7 @@ import express from 'express';
 import { config } from './config/environment';
 import { errorHandler } from './middleware/errorHandler.middleware';
 import authRoutes from './routes/auth.routes';
+import candidateRoutes from './routes/candidate.routes';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get('/health', (req, res) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/candidates', candidateRoutes);
 
 // 404 handler
 app.use((req, res) => {
